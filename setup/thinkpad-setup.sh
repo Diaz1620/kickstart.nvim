@@ -44,8 +44,10 @@ if command -v apt-get >/dev/null 2>&1; then
   PKG_MANAGER=apt
   info "Installing base packages with apt"
   sudo apt-get update
+  # golang + nodejs/npm are needed by Mason for gopls and the ts/emmet/
+  # tailwind/shopify language servers in lua/custom/plugins/lsp.lua.
   sudo apt-get install -y git make gcc unzip curl xz-utils fontconfig \
-    ripgrep fd-find xclip wl-clipboard
+    ripgrep fd-find xclip wl-clipboard golang nodejs npm
   # Ubuntu/Debian ship fd as "fdfind"; kickstart expects "fd" on PATH.
   if ! command -v fd >/dev/null 2>&1 && command -v fdfind >/dev/null 2>&1; then
     ln -sf "$(command -v fdfind)" "$LOCAL_BIN/fd"
@@ -53,13 +55,17 @@ if command -v apt-get >/dev/null 2>&1; then
 elif command -v dnf >/dev/null 2>&1; then
   PKG_MANAGER=dnf
   info "Installing base packages with dnf"
+  # golang + nodejs are needed by Mason for gopls and the ts/emmet/
+  # tailwind/shopify language servers in lua/custom/plugins/lsp.lua.
   sudo dnf install -y git make gcc unzip curl xz fontconfig \
-    ripgrep fd-find xclip wl-clipboard
+    ripgrep fd-find xclip wl-clipboard golang nodejs npm
 elif command -v pacman >/dev/null 2>&1; then
   PKG_MANAGER=pacman
   info "Installing base packages with pacman"
+  # go + nodejs/npm are needed by Mason for gopls and the ts/emmet/
+  # tailwind/shopify language servers in lua/custom/plugins/lsp.lua.
   sudo pacman -Syu --needed --noconfirm git make gcc unzip curl xz fontconfig \
-    ripgrep fd xclip wl-clipboard
+    ripgrep fd xclip wl-clipboard go nodejs npm
 else
   echo "error: no supported package manager found (apt, dnf, or pacman)" >&2
   exit 1
